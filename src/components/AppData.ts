@@ -1,5 +1,6 @@
-import { IEvents } from './base/events';
-import { IProduct, ICart, IOrder, IOrderForm, IAppData} from '../types';
+import { IEvents } from './base/Events';
+import { IProduct, ICart, IOrder, IOrderForm, IAppData } from '../types';
+import { settings } from '../utils/constants';
 
 export class AppData implements IAppData {
 	products: IProduct[] = [];
@@ -33,7 +34,10 @@ export class AppData implements IAppData {
 	}
 
 	getCartTotal() {
-		return this.cart.items.reduce((total, item) => total + (item.price ?? 0), 0);
+		return this.cart.items.reduce(
+			(total, item) => total + (item.price ?? 0),
+			0
+		);
 	}
 
 	getCartCounter() {
@@ -51,9 +55,7 @@ export class AppData implements IAppData {
 	}
 
 	setOrderProductsList() {
-		this.order.items = this.cart.items
-			.filter((item) => item.price > 0)
-			.map((item) => item.id);
+		this.order.items = this.cart.items.map((item) => item.id);
 	}
 
 	validateForm(formName: 'order' | 'contacts') {
@@ -61,20 +63,20 @@ export class AppData implements IAppData {
 
 		if (formName === 'order') {
 			if (!this.order.address) {
-				errors.address = 'Необходимо указать адрес';
+				errors.address = settings.errorMessages.address;
 			}
 			if (!this.order.payment) {
-				errors.payment = 'Необходимо указать способ оплаты';
+				errors.payment = settings.errorMessages.payment;
 			}
 			this.events.emit('orderFormErrors:change', errors);
 		}
 
 		if (formName === 'contacts') {
 			if (!this.order.email) {
-				errors.email = 'Необходимо указать email';
+				errors.email = settings.errorMessages.email;
 			}
 			if (!this.order.phone) {
-				errors.phone = 'Необходимо указать телефон';
+				errors.phone = settings.errorMessages.phone;
 			}
 			this.events.emit('contactsFormErrors:change', errors);
 		}
@@ -98,7 +100,11 @@ export class AppData implements IAppData {
 
 	resetSelectedProducts() {
 		this.products.forEach((item) => {
-			item.selected = false;
+			if (item.price === null) {
+				item.selected = true;
+			} else {
+				item.selected = false;
+			}
 		});
 	}
 

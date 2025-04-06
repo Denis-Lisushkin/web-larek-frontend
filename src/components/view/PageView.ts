@@ -1,7 +1,6 @@
 import { ensureElement } from '../../utils/utils';
-import { Component } from '../base/component';
-import { IEvents } from '../base/events';
-
+import { Component } from '../base/Component';
+import { IEvents } from '../base/Events';
 
 // интерфейс главной страницы
 interface IPage {
@@ -38,7 +37,7 @@ export class Page extends Component<IPage> {
 		this._productsCatalog.replaceChildren(...items);
 	}
 
-  // сеттер прокрутки страницы
+	// сеттер прокрутки страницы
 	set scrollLocked(value: boolean) {
 		this.toggleClass(this._pageWrapper, 'page__wrapper_locked', value);
 	}

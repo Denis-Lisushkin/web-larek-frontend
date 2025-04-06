@@ -5,7 +5,7 @@ export interface IProduct {
   title: string;        
   category: string;     
   price: number | null;
-  selected: boolean;   
+  selected?: boolean;   
 }
 
 export interface ICart {

@@ -1,7 +1,7 @@
 import { IProduct } from '../../types';
 import { ensureElement } from '../../utils/utils';
-import { Component } from '../base/component';
-import { IEvents } from '../base/events';
+import { Component } from '../base/Component';
+import { IEvents } from '../base/Events';
 
 // интерфейс окна корзины
 export interface ICartView {
@@ -27,7 +27,10 @@ export class Cart extends Component<ICartView> {
 
 		this._title = ensureElement<HTMLElement>('.modal__title', this.container);
 		this._list = ensureElement<HTMLElement>('.basket__list', this.container);
-		this._button = ensureElement<HTMLButtonElement>('.basket__button',this.container);
+		this._button = ensureElement<HTMLButtonElement>(
+			'.basket__button',
+			this.container
+		);
 		this._total = ensureElement<HTMLElement>('.basket__price', this.container);
 
 		if (this._button) {
@@ -42,10 +45,10 @@ export class Cart extends Component<ICartView> {
 		this._list.replaceChildren(...items);
 	}
 
-  // сеттер суммы корзины
+	// сеттер суммы корзины
 	set total(total: number) {
-		this._total.textContent = total + ' синапсов';
-		this._button.disabled = total > 0 ? false : true;
+		this.setText(this._total, total + ' синапсов');
+		this.setDisabled(this._button, total <= 0);
 	}
 }
 
@@ -57,7 +60,6 @@ export interface IProductInCart extends IProduct {
 	price: number;
 }
 
-
 // Класс создания карточки товара в корзине
 export class CartProduct extends Component<IProductInCart> {
 	protected _index: HTMLElement;
@@ -68,10 +70,16 @@ export class CartProduct extends Component<IProductInCart> {
 	constructor(container: HTMLElement, actions?: ICartActions) {
 		super(container);
 
-		this._index = ensureElement<HTMLElement>('.basket__item-index', this.container);
+		this._index = ensureElement<HTMLElement>(
+			'.basket__item-index',
+			this.container
+		);
 		this._title = ensureElement<HTMLElement>('.card__title', this.container);
 		this._price = ensureElement<HTMLElement>('.card__price', this.container);
-		this._buttonDelete = ensureElement<HTMLButtonElement>('.basket__item-delete', this.container);
+		this._buttonDelete = ensureElement<HTMLButtonElement>(
+			'.basket__item-delete',
+			this.container
+		);
 
 		if (this._buttonDelete) {
 			this._buttonDelete.addEventListener('click', (evt) => {
@@ -80,22 +88,22 @@ export class CartProduct extends Component<IProductInCart> {
 			});
 		}
 	}
-  // сеттер номера товара в корзине
+	// сеттер номера товара в корзине
 	set index(value: number) {
-		this._index.textContent = value.toString();
+		this.setText(this._index, value.toString());
 	}
 
-  // сеттер названия товара в корзине
+	// сеттер названия товара в корзине
 	set title(value: string) {
-		this._title.textContent = value;
+		this.setText(this._title, value);
 	}
 
-  // сеттер цены товара в корзине
+	// сеттер цены товара в корзине
 	set price(value: string) {
 		if (value === null) {
-			this._price.textContent = 'Бесценно';
+			this.setText(this._price, 'Бесценно');
 		} else {
-			this._price.textContent = value + ' синапсов';
+			this.setText(this._price, value + ' синапсов');
 		}
 	}
 }
